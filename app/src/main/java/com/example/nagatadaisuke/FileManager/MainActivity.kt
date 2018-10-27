@@ -1,14 +1,15 @@
 package com.example.nagatadaisuke.FileManager
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import java.io.File
-import java.io.FileNotFoundException
+import android.util.Log
+import java.io.*
 import java.util.*
 
 
@@ -40,10 +41,31 @@ class MainActivity : AppCompatActivity() {
                         var d = scan.next()
                         print(i)
                         print(d)
+                        //内部保存
+                        applicationContext.openFileOutput("init.txt", Context.MODE_PRIVATE).use {
+                            it.write(i.toByteArray())
+                            it.write(d.toByteArray())
+                        }
+                        
                     }catch (e: FileNotFoundException){
                         println(e)
                 }
             }
+            var d = readFiles("init.txt")
+           print(d)
+        }
+    }
+    private fun readFiles(file: String): String? {
+
+        // to check whether file exists or not
+        val readFile = File(applicationContext.filesDir, file)
+
+        if(!readFile.exists()){
+            Log.d("debug","No file exists")
+            return null
+        }
+        else{
+            return readFile.bufferedReader().use(BufferedReader::readText)
         }
     }
 }
