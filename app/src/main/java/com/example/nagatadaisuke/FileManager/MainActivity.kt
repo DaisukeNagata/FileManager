@@ -17,14 +17,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /*
-使用した日付を保存
-val today = getToday()
-check = today.substring(7, 8)
-saveFile(timeName,check)
+決済をするときにtimeCount = trueにする
 */
 class MainActivity : AppCompatActivity() {
     var imei = ""
     var check = ""
+    var timeCount: Boolean = false
     var number = 0
     private val fileName = "test.txt"
     private val timeName = "time.txt"
@@ -34,6 +32,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        if (timeCount == true) {
+            val today = getToday()
+            check = today.substring(7, 8)
+            saveFile(timeName,check)
+            timeCount = false
+        }
 
         // リクエスト識別用のユニークな値
         val REQUEST_PERMISSIONS_ID = 1000
@@ -81,8 +86,7 @@ class MainActivity : AppCompatActivity() {
                 val file = File(file.path)
                 val scan = Scanner(file)
                 var i = scan.nextLine()
-                var t = getToday()
-                val yymmdd = t.substring(3, 8)
+                val yymmdd = getToday().substring(3, 8)
                 var y = yymmdd.substring(0,1)
                 var mdd = yymmdd.substring(2,5)
                 var ymdd = y+mdd
@@ -102,15 +106,14 @@ class MainActivity : AppCompatActivity() {
 
     //日付の変更でnumberの変更
     private fun checkTIme() {
-        val today = getToday()
-        certainDay = today.substring(7, 8)
+        certainDay = getToday().substring(7, 8)
         check = readFiles(timeName)!!
         if (certainDay != check){
             number = 0
             saveFile(fileName,number.toString())
-            val today = getToday()
-            check = today.substring(7, 8)
+            check = getToday().substring(7, 8)
             saveFile(timeName,check)
+            timeCount = true
         }
     }
 
