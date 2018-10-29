@@ -23,7 +23,6 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
     var imei = ""
     var check = ""
-    var timeCount: Boolean = false
     var number = 0
     private val fileName = "test.txt"
     private val timeName = "time.txt"
