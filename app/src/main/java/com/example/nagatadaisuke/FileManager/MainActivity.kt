@@ -3,6 +3,7 @@ package com.example.nagatadaisuke.FileManager
 import android.Manifest
 import android.annotation.TargetApi
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.support.v7.app.AppCompatActivity
@@ -26,18 +27,24 @@ class MainActivity : AppCompatActivity() {
     var number = 0
     private val fileName = "test.txt"
     private val timeName = "time.txt"
-    var certainDay = "" // 比較対象2
+    var certainDay = ""
+    lateinit var prefs: SharedPreferences
 
     @TargetApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (timeCount == true) {
+        prefs = getSharedPreferences("FLAG_NAME", AppCompatActivity.MODE_PRIVATE)
+        check = (prefs.getString("FLAG_NAME", check))
+        if  (check == "") {
             val today = getToday()
             check = today.substring(7, 8)
             saveFile(timeName,check)
-            timeCount = false
+            val e : SharedPreferences.Editor = prefs.edit()
+            e.putString("FLAG_NAME" , check)
+            e.apply()
+            check = prefs.getString("FLAG_NAME", check)
         }
 
         // リクエスト識別用のユニークな値
@@ -100,20 +107,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
         saveFile(fileName,number.toString())
-
         checkTIme()
     }
 
     //日付の変更でnumberの変更
     private fun checkTIme() {
         certainDay = getToday().substring(7, 8)
-        check = readFiles(timeName)!!
         if (certainDay != check){
             number = 0
             saveFile(fileName,number.toString())
             check = getToday().substring(7, 8)
             saveFile(timeName,check)
-            timeCount = true
+            val e : SharedPreferences.Editor = prefs.edit()
+            e.putString("FLAG_NAME" , certainDay)
+            e.apply()
+            check = prefs.getString("FLAG_NAME", certainDay)
         }
     }
 
